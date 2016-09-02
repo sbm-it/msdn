@@ -5,8 +5,9 @@ OAUTH = function(x){
     // defaults
     this.url = x.url || 'https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&'
     this.clientId= x.clientId || '04c089f8-213f-4783-9b5f-cfa7b227d50b'
-    this.redirect_uri= x.redirect_uri || location.href
+    this.redirect_uri= x.redirect_uri || location.href.replace(/\?$/,'')
     this.login = function(){
+        localStorage.msdnOauthConfig=JSON.stringify(this)
         location.href=this.url+'redirect_uri='+this.redirect_uri+'&client_id='+this.clientId
     }
 }
@@ -56,12 +57,36 @@ if(document.getElementById('oauthDiv')){
             localStorage.msdnOauth=JSON.stringify(oth)
         }
         oth=JSON.parse(localStorage.msdnOauth)
+        if(localStorage.msdnOauthConfig){ // there is more
+            var moreOth = JSON.parse(localStorage.msdnOauthConfig)
+            for( var a in moreOth){
+                oth[a]=moreOth[a]
+            }
+            localStorage.removeItem('msdnOauthConfig')
+            localStorage.setItem('msdnOauth',JSON.stringify(oth))
+        }
         h += '<h5 style="color:blue">Login info found at localStorage.msdnOauth:</h5>'
-        h += '<pre>'+JSON.stringify(oth,null,3)+'</pre>'   
+        h += '<pre>'+JSON.stringify(oth,null,3)+'</pre><div id="getId" style="color:red">getting identification ... (not coded yet)</div>'   
         oauthFun.innerHTML=h
         logoutBt.onclick=function(){
             localStorage.removeItem('msdnOauth')
             location.search=''
         }
+        // getId
+        /*
+        var payload='grant_type=authorization_code'
+        payload +='&redirect_uri='+oth.redirect_uri.replace('?','')
+        payload +='&client_id='+oth.clientId
+        payload +='&client_secret='+oth.clientSc
+        payload +='&code='+oth.code
+        payload +='&resource=https%3A%2F%2Fgraph.microsoft.com%2F'
+        getId.innerHTML = getId.textContent + ' from '+ payload
+        if(false){
+            $.post('https://login.microsoftonline.com/common/oauth2/token HTTP/1.1',payload)
+             .then(function(x){
+                 4
+             })
+        }
+        */
     }
 }
