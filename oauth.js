@@ -22,7 +22,7 @@ if(document.getElementById('oauthDiv')){
     h += ' <a href="https://github.com/jonasalmeida" target="_blank"> Jonas Almeida</a>, September 2016. '
     h +='<hr>'
     h +='<ol>'
-    var docUrl='https://graph.microsoft.io/en-us/docs/authorization/app_authorization'
+    var docUrl='https://azure.microsoft.com/en-us/documentation/articles/active-directory-authentication-scenarios'
     h +='<li> Read documentation: <a href="'+docUrl+'" target="_blank">'+docUrl+'</a>.</li>'
     h +='<li> Registered application with Azure active directory ...<span style="color:red">(Wade did it)</span>:</li>'
     h +='<li> Application ID: 04c089f8-213f-4783-9b5f-cfa7b227d50b</li>'
