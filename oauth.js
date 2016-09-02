@@ -7,8 +7,11 @@ OAUTH = function(x){
     this.clientId= x.clientId || '04c089f8-213f-4783-9b5f-cfa7b227d50b'
     this.redirect_uri= x.redirect_uri || location.href.replace(/\?$/,'')
     this.login = function(){
-        localStorage.msdnOauthConfig=JSON.stringify(this)
+        localStorage.setItem('msdnOauthConfig',JSON.stringify(this))
         location.href=this.url+'redirect_uri='+this.redirect_uri+'&client_id='+this.clientId
+    }
+    this.getId=function(){
+        4
     }
 }
 
@@ -64,9 +67,10 @@ if(document.getElementById('oauthDiv')){
             }
             localStorage.removeItem('msdnOauthConfig')
             localStorage.setItem('msdnOauth',JSON.stringify(oth))
+            localStorage.setItem('msdnOauthLast',JSON.stringify(oth))
         }
         h += '<h5 style="color:blue">Login info found at localStorage.msdnOauth:</h5>'
-        h += '<pre>'+JSON.stringify(oth,null,3)+'</pre><div id="getId" style="color:red">getting identification ... (not coded yet)</div>'   
+        h += '<pre>'+JSON.stringify(oth,null,3)+'</pre><span style="color:navy">If you are developing a proxy service, you can now send the <span style="color:green">code value</span> above to your service from where you can get user identity as described in <a href="https://graph.microsoft.io/en-us/docs/authorization/app_authorization" target="_blank">this documentation</a>. That apporach will have your service POST the code value, the application id, application secret and redirect uri to <span style="color:green">https://login.microsoftonline.com/common/oauth2/token HTTP/1.1</span>. If you are instead developing a real Web App (what MS calls a "single page Application"), then we have to take a <a href="https://azure.microsoft.com/en-us/documentation/articles/active-directory-authentication-scenarios/#single-page-application-spa" target="_blank">different route</a>:</span><div id="getId" style="color:red">getting identification ... (not coded yet)</div>'   
         oauthFun.innerHTML=h
         logoutBt.onclick=function(){
             localStorage.removeItem('msdnOauth')
