@@ -3,22 +3,33 @@ console.log('oauth.js loaded');
 OAUTH = function(x){
     x= x || {}
     // defaults
-    this.url = x.url || 'https://login.microsoftonline.com/common/oauth2/authorize?response_type=code&'
+    this.url = x.url || 'https://login.microsoftonline.com/common/oauth2/authorize'
     this.clientId= x.clientId || '04c089f8-213f-4783-9b5f-cfa7b227d50b'
     this.redirect_uri= x.redirect_uri || location.href.replace(/\?$/,'')
     this.login = function(){
         localStorage.setItem('msdnOauthConfig',JSON.stringify(this))
-        location.href=this.url+'redirect_uri='+this.redirect_uri+'&client_id='+this.clientId
+        location.href=this.url+'?response_type=code&redirect_uri='+this.redirect_uri+'&client_id='+this.clientId
+        localStorage.log=this.url+'?response_type=tokenId&redirect_uri='+this.redirect_uri+'&client_id='+this.clientId
     }
-    this.getId=function(){
-        4
-    }
+}
+OAUTH.getId=function(){
+    var oth = JSON.parse(localStorage.msdnOauth)
+    var config = {
+        instance: 'https://login.microsoftonline.com/',
+        tenant: 'stonybrookmedicine.edu',
+        clientId: '04c089f8-213f-4783-9b5f-cfa7b227d50b',
+        postLogoutRedirectUri: location.origin+location.pathname,
+        cacheLocation: 'localStorage', // enable this for IE, as sessionStorage does not work for localhost.
+    };
+    var authContext = new AuthenticationContext(config)
+    authContext.login()
+    4
 }
 
 // in case this is being run for show in the oauth sandbox
 
 if(document.getElementById('oauthDiv')){
-    var h = '<h3>Experimenting with <a href="https://oauth.net/2/" target="_blank">OAUTH2</a> for Microsoft Cloud resources <a href="https://github.com/sbm-it/msdn" target="_blank"><i id="gitIcon"" class="fa fa-github-alt" aria-hidden="true" style="color:maroon"></i></a></h3>'
+    var h = '<h3>Experimenting with <a href="https://oauth.net/2/" target="_blank">OAUTH2</a> for Microsoft Cloud resources <a href="https://github.com/sbm-it/msdn" target="_blank"><i id="gitIcon" class="fa fa-github-alt" aria-hidden="true" style="color:maroon"></i></a> <i id="offIcon" class="fa fa-power-off" aria-hidden="true" style="color:maroon" onclick="location.href=location.href.split(/[?#]/)[0]"></i></h3>'
     h += ' <a href="https://github.com/jonasalmeida" target="_blank"> Jonas Almeida</a>, September 2016. '
     h +='<hr>'
     h +='<ol>'
@@ -34,10 +45,10 @@ if(document.getElementById('oauthDiv')){
     h +='<div id="oauthFun">...</div>'
     // embelish github icon
     oauthDiv.innerHTML=h
-    gitIcon.onmouseover=function(){
+    offIcon.onmouseover=gitIcon.onmouseover=function(){
         this.style.color='red'
     }
-    gitIcon.onmouseleave=function(){
+    offIcon.onmouseleave=gitIcon.onmouseleave=function(){
         this.style.color='maroon'
     }
     // oauth fun now
@@ -47,6 +58,7 @@ if(document.getElementById('oauthDiv')){
         oauthFun.innerHTML=h
         loginBt.onclick=function(){
             (new OAUTH).login()
+            //(new OAUTH).getId()
         }
     }else{
         h += 'You are logged in, <button id="logoutBt" class="btn btn-success">Log Out</button>'
@@ -70,7 +82,7 @@ if(document.getElementById('oauthDiv')){
             localStorage.setItem('msdnOauthLast',JSON.stringify(oth))
         }
         h += '<h5 style="color:blue">Login info found at localStorage.msdnOauth:</h5>'
-        h += '<pre>'+JSON.stringify(oth,null,3)+'</pre><span style="color:navy">If you are developing a proxy service, you can now send the <span style="color:green">code value</span> above to your service from where you can get user identity as described in <a href="https://graph.microsoft.io/en-us/docs/authorization/app_authorization" target="_blank">this documentation</a>. That apporach will have your service POST the code value, the application id, application secret and redirect uri to <span style="color:green">https://login.microsoftonline.com/common/oauth2/token HTTP/1.1</span>. If you are instead developing a real Web App (what MS calls a "single page Application"), then we have to take a <a href="https://azure.microsoft.com/en-us/documentation/articles/active-directory-authentication-scenarios/#single-page-application-spa" target="_blank">different route</a>:</span><div id="getId" style="color:red">getting identification ... (not coded yet)</div>'   
+        h += '<pre>'+JSON.stringify(oth,null,3)+'</pre><span style="color:navy">If you are developing a proxy service, you can now send the <span style="color:green">code value</span> above to your service from where you can get user identity as described in <a href="https://graph.microsoft.io/en-us/docs/authorization/app_authorization" target="_blank">this documentation</a>. That apporach will have your service POST the code value, the application id, application secret and redirect uri to <span style="color:green">https://login.microsoftonline.com/common/oauth2/token HTTP/1.1</span>. If you are instead developing a real Web App (what MS calls a "single page Application"), then we have to take a <a href="https://azure.microsoft.com/en-us/documentation/articles/active-directory-authentication-scenarios/#single-page-application-spa" target="_blank">different route</a>:</span><div id="getId" style="color:red"><div><button class="btn btn-info" onclick="OAUTH.getId()">Get ID</button></div> ... not coded yet</div>'   
         oauthFun.innerHTML=h
         logoutBt.onclick=function(){
             localStorage.removeItem('msdnOauth')
@@ -93,4 +105,20 @@ if(document.getElementById('oauthDiv')){
         }
         */
     }
+}
+
+
+if(location.href.match('#id_token')){ 
+    // if this is a return from a login
+    localStorage.msdnOauthToken=location.hash.split('=')[1]
+    var config = {
+        instance: 'https://login.microsoftonline.com/',
+        tenant: 'stonybrookmedicine.edu',
+        clientId: '04c089f8-213f-4783-9b5f-cfa7b227d50b',
+        postLogoutRedirectUri: location.origin+location.pathname,
+        cacheLocation: 'localStorage', // enable this for IE, as sessionStorage does not work for localhost.
+    };
+    var authContext = new AuthenticationContext(config)
+    4
+
 }
