@@ -5,5 +5,5 @@ Live at https://sbm-it.github.io/msdn/oauth2.html, if you have added that domain
 
 A screencast was also recorded for convenience (click on picture to play youtube video):
 
-<a href="https://www.youtube.com/watch?v=d5toFmz36NU" target="_blank"><img src="oauth2.jpg" /></a>
+<a href="https://www.youtube.com/watch?v=913GqjMutLc" target="_blank"><img src="oauth2.jpg" /></a>
 
